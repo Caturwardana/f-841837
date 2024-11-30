@@ -1,4 +1,5 @@
 import { Car, Battery, AlertTriangle } from "lucide-react";
+import { cn } from "@/lib/utils";  // Add this import
 
 interface Vehicle {
   id: string;
