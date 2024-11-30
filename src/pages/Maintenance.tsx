@@ -1,6 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
+import { Sidebar } from "@/components/dashboard/Sidebar";
 
 const Maintenance = () => {
   const maintenanceRecords = [
@@ -41,41 +42,44 @@ const Maintenance = () => {
   };
 
   return (
-    <div className="p-8">
-      <div className="max-w-7xl mx-auto">
-        <h1 className="text-2xl font-bold text-gray-900 mb-8">Maintenance</h1>
-        
-        <Card>
-          <CardHeader>
-            <CardTitle>Interventions</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Véhicule</TableHead>
-                  <TableHead>Problème</TableHead>
-                  <TableHead>Statut</TableHead>
-                  <TableHead>Date</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {maintenanceRecords.map((record) => (
-                  <TableRow key={record.id}>
-                    <TableCell>{record.vehicle}</TableCell>
-                    <TableCell>{record.issue}</TableCell>
-                    <TableCell>
-                      <Badge variant="secondary" className={getStatusColor(record.status)}>
-                        {record.status}
-                      </Badge>
-                    </TableCell>
-                    <TableCell>{record.date}</TableCell>
+    <div className="flex h-screen bg-gray-100">
+      <Sidebar />
+      <div className="flex-1 p-8 overflow-auto">
+        <div className="max-w-7xl mx-auto">
+          <h1 className="text-2xl font-bold text-gray-900 mb-8">Maintenance</h1>
+          
+          <Card>
+            <CardHeader>
+              <CardTitle>Interventions</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Véhicule</TableHead>
+                    <TableHead>Problème</TableHead>
+                    <TableHead>Statut</TableHead>
+                    <TableHead>Date</TableHead>
                   </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </CardContent>
-        </Card>
+                </TableHeader>
+                <TableBody>
+                  {maintenanceRecords.map((record) => (
+                    <TableRow key={record.id}>
+                      <TableCell>{record.vehicle}</TableCell>
+                      <TableCell>{record.issue}</TableCell>
+                      <TableCell>
+                        <Badge variant="secondary" className={getStatusColor(record.status)}>
+                          {record.status}
+                        </Badge>
+                      </TableCell>
+                      <TableCell>{record.date}</TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </CardContent>
+          </Card>
+        </div>
       </div>
     </div>
   );

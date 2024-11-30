@@ -1,5 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@/components/ui/table";
+import { Sidebar } from "@/components/dashboard/Sidebar";
 
 const Fuel = () => {
   const fuelRecords = [
@@ -9,39 +10,42 @@ const Fuel = () => {
   ];
 
   return (
-    <div className="p-8">
-      <div className="max-w-7xl mx-auto">
-        <h1 className="text-2xl font-bold text-gray-900 mb-8">Gestion du Carburant</h1>
-        
-        <Card>
-          <CardHeader>
-            <CardTitle>Historique des Pleins</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Véhicule</TableHead>
-                  <TableHead>Date</TableHead>
-                  <TableHead>Litres</TableHead>
-                  <TableHead>Coût</TableHead>
-                  <TableHead>Consommation</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {fuelRecords.map((record) => (
-                  <TableRow key={record.id}>
-                    <TableCell>{record.vehicle}</TableCell>
-                    <TableCell>{record.date}</TableCell>
-                    <TableCell>{record.liters}L</TableCell>
-                    <TableCell>{record.cost}</TableCell>
-                    <TableCell>{record.consumption}</TableCell>
+    <div className="flex h-screen bg-gray-100">
+      <Sidebar />
+      <div className="flex-1 p-8 overflow-auto">
+        <div className="max-w-7xl mx-auto">
+          <h1 className="text-2xl font-bold text-gray-900 mb-8">Gestion du Carburant</h1>
+          
+          <Card>
+            <CardHeader>
+              <CardTitle>Historique des Pleins</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Véhicule</TableHead>
+                    <TableHead>Date</TableHead>
+                    <TableHead>Litres</TableHead>
+                    <TableHead>Coût</TableHead>
+                    <TableHead>Consommation</TableHead>
                   </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </CardContent>
-        </Card>
+                </TableHeader>
+                <TableBody>
+                  {fuelRecords.map((record) => (
+                    <TableRow key={record.id}>
+                      <TableCell>{record.vehicle}</TableCell>
+                      <TableCell>{record.date}</TableCell>
+                      <TableCell>{record.liters}L</TableCell>
+                      <TableCell>{record.cost}</TableCell>
+                      <TableCell>{record.consumption}</TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </CardContent>
+          </Card>
+        </div>
       </div>
     </div>
   );

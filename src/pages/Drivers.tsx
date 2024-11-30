@@ -1,5 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@/components/ui/table";
+import { Sidebar } from "@/components/dashboard/Sidebar";
 
 const Drivers = () => {
   const drivers = [
@@ -9,39 +10,42 @@ const Drivers = () => {
   ];
 
   return (
-    <div className="p-8">
-      <div className="max-w-7xl mx-auto">
-        <h1 className="text-2xl font-bold text-gray-900 mb-8">Gestion des Chauffeurs</h1>
-        
-        <Card>
-          <CardHeader>
-            <CardTitle>Liste des Chauffeurs</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Nom</TableHead>
-                  <TableHead>Véhicule</TableHead>
-                  <TableHead>Statut</TableHead>
-                  <TableHead>Heures</TableHead>
-                  <TableHead>Heures Supp.</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {drivers.map((driver) => (
-                  <TableRow key={driver.id}>
-                    <TableCell>{driver.name}</TableCell>
-                    <TableCell>{driver.vehicle}</TableCell>
-                    <TableCell>{driver.status}</TableCell>
-                    <TableCell>{driver.hours}</TableCell>
-                    <TableCell>{driver.overtime}</TableCell>
+    <div className="flex h-screen bg-gray-100">
+      <Sidebar />
+      <div className="flex-1 p-8 overflow-auto">
+        <div className="max-w-7xl mx-auto">
+          <h1 className="text-2xl font-bold text-gray-900 mb-8">Gestion des Chauffeurs</h1>
+          
+          <Card>
+            <CardHeader>
+              <CardTitle>Liste des Chauffeurs</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Nom</TableHead>
+                    <TableHead>Véhicule</TableHead>
+                    <TableHead>Statut</TableHead>
+                    <TableHead>Heures</TableHead>
+                    <TableHead>Heures Supp.</TableHead>
                   </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </CardContent>
-        </Card>
+                </TableHeader>
+                <TableBody>
+                  {drivers.map((driver) => (
+                    <TableRow key={driver.id}>
+                      <TableCell>{driver.name}</TableCell>
+                      <TableCell>{driver.vehicle}</TableCell>
+                      <TableCell>{driver.status}</TableCell>
+                      <TableCell>{driver.hours}</TableCell>
+                      <TableCell>{driver.overtime}</TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </CardContent>
+          </Card>
+        </div>
       </div>
     </div>
   );
