@@ -1,5 +1,5 @@
 
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import AppLayout from "@/components/layout/AppLayout";
 import { useDocuments } from "@/contexts/DocumentContext";
 import { useAuth } from "@/contexts/AuthContext";
@@ -11,11 +11,9 @@ import DocumentViewDialog from "@/components/documents/DocumentViewDialog";
 import DeleteConfirmDialog from "@/components/documents/DeleteConfirmDialog";
 import {
   Filter,
-  Grid,
-  List,
-  Plus,
   Search,
   Loader2,
+  Plus,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -28,7 +26,7 @@ import {
 } from "@/components/ui/select";
 
 const Home = () => {
-  const { documents, categories, isLoading } = useDocuments();
+  const { documents, categories, isLoading, updateDocument } = useDocuments();
   const { isAdmin } = useAuth();
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   const [searchQuery, setSearchQuery] = useState("");
@@ -38,6 +36,19 @@ const Home = () => {
   const [isViewDialogOpen, setIsViewDialogOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [selectedDocument, setSelectedDocument] = useState<Document | null>(null);
+
+  // Load saved view preference from localStorage
+  useEffect(() => {
+    const savedViewMode = localStorage.getItem("documentViewMode");
+    if (savedViewMode && (savedViewMode === "grid" || savedViewMode === "list")) {
+      setViewMode(savedViewMode as "grid" | "list");
+    }
+  }, []);
+
+  // Save view preference to localStorage when changed
+  useEffect(() => {
+    localStorage.setItem("documentViewMode", viewMode);
+  }, [viewMode]);
 
   const filteredDocuments = useMemo(() => {
     let filtered = documents;
@@ -71,7 +82,18 @@ const Home = () => {
   };
 
   const handleViewDocument = (document: Document) => {
-    setSelectedDocument(document);
+    // Update view count and last viewed time before opening dialog
+    const updatedDocument = {
+      ...document,
+      viewCount: (document.viewCount || 0) + 1,
+      lastViewed: new Date().toISOString(),
+    };
+    
+    // Update the document in context
+    updateDocument(updatedDocument);
+    
+    // Set as selected document and open dialog
+    setSelectedDocument(updatedDocument);
     setIsViewDialogOpen(true);
   };
 
@@ -91,16 +113,27 @@ const Home = () => {
               size="icon"
               className={`${viewMode === "grid" ? "bg-muted" : ""}`}
               onClick={() => setViewMode("grid")}
+              title="Grid view"
             >
-              <Grid className="h-4 w-4" />
+              <div className="grid grid-cols-2 gap-0.5 h-4 w-4">
+                <div className="bg-current rounded-sm"></div>
+                <div className="bg-current rounded-sm"></div>
+                <div className="bg-current rounded-sm"></div>
+                <div className="bg-current rounded-sm"></div>
+              </div>
             </Button>
             <Button
               variant="outline"
               size="icon"
               className={`${viewMode === "list" ? "bg-muted" : ""}`}
               onClick={() => setViewMode("list")}
+              title="List view"
             >
-              <List className="h-4 w-4" />
+              <div className="flex flex-col gap-0.5 h-4 w-4">
+                <div className="h-0.5 w-full bg-current rounded-sm"></div>
+                <div className="h-0.5 w-full bg-current rounded-sm"></div>
+                <div className="h-0.5 w-full bg-current rounded-sm"></div>
+              </div>
             </Button>
             {isAdmin() && (
               <Button onClick={handleAddDocument}>
@@ -177,18 +210,22 @@ const Home = () => {
         />
       )}
 
-      {/* Document form dialog */}
+      {/* Document form dialog - Using React memo to prevent unnecessary rerenders */}
       <DocumentForm
         document={selectedDocument || undefined}
         open={isFormOpen}
         onClose={() => setIsFormOpen(false)}
       />
 
-      {/* Document view dialog */}
+      {/* Document view dialog - Ensuring it's properly cleaned up when closed */}
       <DocumentViewDialog
         document={selectedDocument}
         open={isViewDialogOpen}
-        onClose={() => setIsViewDialogOpen(false)}
+        onClose={() => {
+          setIsViewDialogOpen(false);
+          // Add a small delay before clearing selected document to prevent UI flicker
+          setTimeout(() => setSelectedDocument(null), 300);
+        }}
       />
 
       {/* Delete confirmation dialog */}

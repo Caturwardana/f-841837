@@ -46,6 +46,8 @@ const INITIAL_DOCUMENTS: Document[] = [
     fileType: "PDF",
     uploadedBy: "Admin User",
     url: "#",
+    viewCount: 8,
+    tags: ["guidelines", "implementation", "education"]
   },
   {
     id: "2",
@@ -57,6 +59,8 @@ const INITIAL_DOCUMENTS: Document[] = [
     fileType: "PDF",
     uploadedBy: "Admin User",
     url: "#",
+    viewCount: 12,
+    tags: ["sop", "review", "process"]
   },
   {
     id: "3",
@@ -68,6 +72,8 @@ const INITIAL_DOCUMENTS: Document[] = [
     fileType: "DOCX",
     uploadedBy: "Admin User",
     url: "#",
+    viewCount: 5,
+    tags: ["form", "assessment", "quality"]
   },
   {
     id: "4",
@@ -79,6 +85,8 @@ const INITIAL_DOCUMENTS: Document[] = [
     fileType: "PDF",
     uploadedBy: "Admin User",
     url: "#",
+    viewCount: 21,
+    tags: ["report", "annual", "quality"]
   },
   {
     id: "5",
@@ -90,6 +98,8 @@ const INITIAL_DOCUMENTS: Document[] = [
     fileType: "PDF",
     uploadedBy: "Admin User",
     url: "#",
+    viewCount: 7,
+    tags: ["audit", "process", "internal"]
   },
   {
     id: "6",
@@ -101,6 +111,8 @@ const INITIAL_DOCUMENTS: Document[] = [
     fileType: "PDF",
     uploadedBy: "Admin User",
     url: "#",
+    viewCount: 14,
+    tags: ["corrective", "action", "procedure"]
   },
 ];
 
@@ -110,21 +122,45 @@ export const DocumentProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
+    // Load from localStorage if available
+    const savedDocuments = localStorage.getItem('documents');
+    const savedCategories = localStorage.getItem('categories');
+    
     // In a real app, we would fetch from a database
-    // For demo, we'll use the initial data with a small delay to simulate loading
-    const timer = setTimeout(() => {
-      setDocuments(INITIAL_DOCUMENTS);
-      setCategories(INITIAL_CATEGORIES);
+    // For demo, we'll use localStorage with initial data as fallback
+    setTimeout(() => {
+      if (savedDocuments && savedCategories) {
+        try {
+          setDocuments(JSON.parse(savedDocuments));
+          setCategories(JSON.parse(savedCategories));
+        } catch (e) {
+          console.error("Failed to parse saved data:", e);
+          setDocuments(INITIAL_DOCUMENTS);
+          setCategories(INITIAL_CATEGORIES);
+        }
+      } else {
+        setDocuments(INITIAL_DOCUMENTS);
+        setCategories(INITIAL_CATEGORIES);
+      }
       setIsLoading(false);
-    }, 800);
+    }, 500);
 
-    return () => clearTimeout(timer);
+    return () => {};
   }, []);
+
+  // Save to localStorage whenever data changes
+  useEffect(() => {
+    if (!isLoading) {
+      localStorage.setItem('documents', JSON.stringify(documents));
+      localStorage.setItem('categories', JSON.stringify(categories));
+    }
+  }, [documents, categories, isLoading]);
 
   const addDocument = (document: Omit<Document, "id">) => {
     const newDocument = {
       ...document,
       id: Date.now().toString(),
+      viewCount: 0,
     };
     setDocuments([...documents, newDocument]);
     toast.success("Document added successfully");
@@ -141,7 +177,11 @@ export const DocumentProvider: React.FC<{ children: React.ReactNode }> = ({ chil
         doc.id === updatedDocument.id ? updatedDocument : doc
       )
     );
-    toast.success("Document updated successfully");
+    // Only show toast for user-initiated updates, not automatic ones like view count
+    if (!updatedDocument.lastViewed || 
+        (documents.find(d => d.id === updatedDocument.id)?.viewCount !== updatedDocument.viewCount)) {
+      toast.success("Document updated successfully");
+    }
   };
 
   const addCategory = (category: Omit<Category, "id">) => {

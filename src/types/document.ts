@@ -16,4 +16,7 @@ export interface Document {
   fileType: string;
   uploadedBy: string;
   url: string;
+  viewCount?: number;
+  lastViewed?: string;
+  tags?: string[];
 }

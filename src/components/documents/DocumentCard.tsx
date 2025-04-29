@@ -78,7 +78,10 @@ const DocumentCard: React.FC<DocumentCardProps> = ({ document, onEdit, onDelete,
           </DropdownMenu>
         </div>
         
-        <div className="flex items-center mb-4">
+        <div 
+          className="flex items-center mb-4 cursor-pointer" 
+          onClick={() => onView(document)}
+        >
           <div className="mr-3">
             {getFileIcon()}
           </div>
@@ -93,6 +96,13 @@ const DocumentCard: React.FC<DocumentCardProps> = ({ document, onEdit, onDelete,
         <p className="text-sm text-muted-foreground line-clamp-2 h-10 mb-2">
           {document.description}
         </p>
+        
+        {document.viewCount !== undefined && (
+          <div className="flex items-center text-xs text-muted-foreground mt-2">
+            <Eye className="h-3 w-3 mr-1" />
+            <span>{document.viewCount} view{document.viewCount !== 1 ? 's' : ''}</span>
+          </div>
+        )}
       </CardContent>
       
       <CardFooter className="px-4 py-3 bg-muted border-t text-xs text-muted-foreground flex justify-between">

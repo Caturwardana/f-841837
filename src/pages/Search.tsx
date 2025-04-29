@@ -1,5 +1,5 @@
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import AppLayout from "@/components/layout/AppLayout";
 import { useDocuments } from "@/contexts/DocumentContext";
 import { Document } from "@/types/document";
@@ -18,6 +18,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
+import DocumentList from "@/components/documents/DocumentList";
 
 const Search = () => {
   const { documents, categories, isLoading } = useDocuments();
@@ -26,37 +27,47 @@ const Search = () => {
   const [isSearching, setIsSearching] = useState(false);
   const [searchResults, setSearchResults] = useState<Document[]>([]);
   const [hasSearched, setHasSearched] = useState(false);
+  const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
 
   const [isViewDialogOpen, setIsViewDialogOpen] = useState(false);
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [selectedDocument, setSelectedDocument] = useState<Document | null>(null);
 
-  const handleSearch = () => {
-    setIsSearching(true);
-    setHasSearched(true);
+  // Real-time search implementation
+  useEffect(() => {
+    // Debounce function for performance
+    const debounceSearch = setTimeout(() => {
+      if (searchQuery || selectedCategory !== "all") {
+        setIsSearching(true);
+        setHasSearched(true);
+        
+        // Perform search
+        let results = [...documents];
 
-    // Simulate a search delay
-    setTimeout(() => {
-      let results = [...documents];
+        if (searchQuery) {
+          const query = searchQuery.toLowerCase();
+          results = results.filter(
+            (doc) =>
+              doc.title.toLowerCase().includes(query) ||
+              doc.description.toLowerCase().includes(query)
+          );
+        }
 
-      if (searchQuery) {
-        const query = searchQuery.toLowerCase();
-        results = results.filter(
-          (doc) =>
-            doc.title.toLowerCase().includes(query) ||
-            doc.description.toLowerCase().includes(query)
-        );
+        if (selectedCategory !== "all") {
+          results = results.filter((doc) => doc.category.id === selectedCategory);
+        }
+
+        setSearchResults(results);
+        setIsSearching(false);
+      } else if (hasSearched) {
+        // Clear results if search is cleared
+        setSearchResults([]);
       }
+    }, 300); // 300ms debounce
 
-      if (selectedCategory !== "all") {
-        results = results.filter((doc) => doc.category.id === selectedCategory);
-      }
-
-      setSearchResults(results);
-      setIsSearching(false);
-    }, 500);
-  };
+    return () => clearTimeout(debounceSearch);
+  }, [searchQuery, selectedCategory, documents, hasSearched]);
 
   const handleClearSearch = () => {
     setSearchQuery("");
@@ -96,9 +107,6 @@ const Search = () => {
               placeholder="Search by title or description..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key === "Enter") handleSearch();
-              }}
             />
           </div>
           <Select
@@ -121,10 +129,33 @@ const Search = () => {
             </SelectContent>
           </Select>
           <div className="flex gap-2">
-            <Button className="flex-1" onClick={handleSearch} disabled={isSearching}>
-              {isSearching ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <SearchIcon className="h-4 w-4 mr-2" />}
-              Search
-            </Button>
+            <div className="flex gap-2">
+              <Button
+                variant="outline"
+                size="icon"
+                className={`${viewMode === "grid" ? "bg-muted" : ""}`}
+                onClick={() => setViewMode("grid")}
+              >
+                <div className="grid grid-cols-2 gap-0.5 h-4 w-4">
+                  <div className="bg-current rounded-sm"></div>
+                  <div className="bg-current rounded-sm"></div>
+                  <div className="bg-current rounded-sm"></div>
+                  <div className="bg-current rounded-sm"></div>
+                </div>
+              </Button>
+              <Button
+                variant="outline"
+                size="icon"
+                className={`${viewMode === "list" ? "bg-muted" : ""}`}
+                onClick={() => setViewMode("list")}
+              >
+                <div className="flex flex-col gap-0.5 h-4 w-4">
+                  <div className="h-0.5 w-full bg-current rounded-sm"></div>
+                  <div className="h-0.5 w-full bg-current rounded-sm"></div>
+                  <div className="h-0.5 w-full bg-current rounded-sm"></div>
+                </div>
+              </Button>
+            </div>
             {(searchQuery || selectedCategory !== "all") && (
               <Button variant="outline" size="icon" onClick={handleClearSearch}>
                 <X className="h-4 w-4" />
@@ -191,17 +222,26 @@ const Search = () => {
                 {searchResults.length !== 1 ? "s" : ""}
               </p>
             </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              {searchResults.map((document) => (
-                <DocumentCard
-                  key={document.id}
-                  document={document}
-                  onEdit={handleEditDocument}
-                  onDelete={handleDeleteDocument}
-                  onView={handleViewDocument}
-                />
-              ))}
-            </div>
+            {viewMode === "grid" ? (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                {searchResults.map((document) => (
+                  <DocumentCard
+                    key={document.id}
+                    document={document}
+                    onEdit={handleEditDocument}
+                    onDelete={handleDeleteDocument}
+                    onView={handleViewDocument}
+                  />
+                ))}
+              </div>
+            ) : (
+              <DocumentList
+                documents={searchResults}
+                onEdit={handleEditDocument}
+                onDelete={handleDeleteDocument}
+                onView={handleViewDocument}
+              />
+            )}
           </>
         )
       ) : (
