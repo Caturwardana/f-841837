@@ -1,3 +1,4 @@
+
 import type { Config } from "tailwindcss";
 
 export default {
@@ -27,6 +28,15 @@ export default {
         primary: {
           DEFAULT: "#1a365d",
           foreground: "#ffffff",
+          100: "#E6EBF4",
+          200: "#B3C2D9",
+          300: "#8099BF",
+          400: "#4D70A6",
+          500: "#1a365d",
+          600: "#152C4A",
+          700: "#102138",
+          800: "#0A1525",
+          900: "#050A13",
         },
         secondary: {
           DEFAULT: "#f7fafc",
@@ -47,6 +57,14 @@ export default {
         error: {
           DEFAULT: "#e53e3e",
           foreground: "#ffffff",
+        },
+        muted: {
+          DEFAULT: "#f1f5f9",
+          foreground: "#64748b",
+        },
+        card: {
+          DEFAULT: "#ffffff",
+          foreground: "#1a365d",
         },
       },
       borderRadius: {
