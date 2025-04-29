@@ -1,3 +1,4 @@
+
 import React, { useState, useMemo, useEffect } from "react";
 import AppLayout from "@/components/layout/AppLayout";
 import { useDocuments } from "@/contexts/DocumentContext";
@@ -98,16 +99,13 @@ const Home = () => {
     setIsViewDialogOpen(true);
   };
 
-  const handleAddDocument = () => {
-    setSelectedDocument(null);
-    setIsFormOpen(true);
-  };
-
-  // Fixed: Properly handle dialog close to prevent UI from being stuck
+  // Fixed: Handle dialog close to prevent UI from being stuck
   const handleViewDialogClose = () => {
     setIsViewDialogOpen(false);
-    // Clear the selected document immediately - this was causing the UI to be stuck
-    setSelectedDocument(null);
+    // Clear selected document after dialog is fully closed
+    setTimeout(() => {
+      setSelectedDocument(null);
+    }, 300); // Wait for dialog animation to complete
   };
 
   return (
