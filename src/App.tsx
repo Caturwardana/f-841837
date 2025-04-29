@@ -15,6 +15,7 @@ import Search from "./pages/Search";
 import Upload from "./pages/Upload";
 import Categories from "./pages/Categories";
 import Settings from "./pages/Settings";
+import Users from "./pages/Users";
 
 const queryClient = new QueryClient();
 
@@ -71,6 +72,15 @@ const App = () => (
                   element={
                     <ProtectedRoute requireAdmin={true}>
                       <Settings />
+                    </ProtectedRoute>
+                  } 
+                />
+                
+                <Route 
+                  path="/users" 
+                  element={
+                    <ProtectedRoute requireAdmin={true}>
+                      <Users />
                     </ProtectedRoute>
                   } 
                 />

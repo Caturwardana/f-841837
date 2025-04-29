@@ -39,9 +39,9 @@ const DocumentList: React.FC<DocumentListProps> = ({
   };
 
   return (
-    <div className="overflow-x-auto rounded-md border">
+    <div className="overflow-x-auto rounded-md border bg-background">
       <Table>
-        <TableHeader>
+        <TableHeader className="bg-muted">
           <TableRow>
             <TableHead className="w-[30%]">Title</TableHead>
             <TableHead>Category</TableHead>
@@ -53,7 +53,7 @@ const DocumentList: React.FC<DocumentListProps> = ({
         </TableHeader>
         <TableBody>
           {documents.map((doc) => (
-            <TableRow key={doc.id}>
+            <TableRow key={doc.id} className="hover:bg-muted/50">
               <TableCell className="font-medium">{doc.title}</TableCell>
               <TableCell>
                 <Badge
@@ -68,20 +68,20 @@ const DocumentList: React.FC<DocumentListProps> = ({
               <TableCell>{formatDate(doc.uploadDate)}</TableCell>
               <TableCell className="text-right">
                 <div className="flex justify-end gap-2">
-                  <Button variant="ghost" size="icon" onClick={() => onView(doc)}>
+                  <Button variant="outline" size="icon" onClick={() => onView(doc)}>
                     <Eye className="h-4 w-4" />
                   </Button>
                   
                   {isAdmin() && (
                     <>
-                      <Button variant="ghost" size="icon" onClick={() => onEdit(doc)}>
+                      <Button variant="outline" size="icon" onClick={() => onEdit(doc)}>
                         <Edit className="h-4 w-4" />
                       </Button>
                       <Button
-                        variant="ghost"
+                        variant="outline"
                         size="icon"
                         onClick={() => onDelete(doc)}
-                        className="text-error hover:text-error hover:bg-error/10"
+                        className="text-destructive hover:text-destructive hover:bg-destructive/10"
                       >
                         <Trash2 className="h-4 w-4" />
                       </Button>

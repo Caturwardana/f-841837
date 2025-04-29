@@ -1,4 +1,3 @@
-
 import React, { useState, useMemo, useEffect } from "react";
 import AppLayout from "@/components/layout/AppLayout";
 import { useDocuments } from "@/contexts/DocumentContext";
@@ -14,6 +13,8 @@ import {
   Search,
   Loader2,
   Plus,
+  Grid,
+  List,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -102,6 +103,13 @@ const Home = () => {
     setIsFormOpen(true);
   };
 
+  // Fixed: Properly handle dialog close to prevent UI from being stuck
+  const handleViewDialogClose = () => {
+    setIsViewDialogOpen(false);
+    // Clear the selected document immediately - this was causing the UI to be stuck
+    setSelectedDocument(null);
+  };
+
   return (
     <AppLayout>
       <div className="mb-6 flex flex-col gap-4">
@@ -115,12 +123,7 @@ const Home = () => {
               onClick={() => setViewMode("grid")}
               title="Grid view"
             >
-              <div className="grid grid-cols-2 gap-0.5 h-4 w-4">
-                <div className="bg-current rounded-sm"></div>
-                <div className="bg-current rounded-sm"></div>
-                <div className="bg-current rounded-sm"></div>
-                <div className="bg-current rounded-sm"></div>
-              </div>
+              <Grid className="h-4 w-4" />
             </Button>
             <Button
               variant="outline"
@@ -129,11 +132,7 @@ const Home = () => {
               onClick={() => setViewMode("list")}
               title="List view"
             >
-              <div className="flex flex-col gap-0.5 h-4 w-4">
-                <div className="h-0.5 w-full bg-current rounded-sm"></div>
-                <div className="h-0.5 w-full bg-current rounded-sm"></div>
-                <div className="h-0.5 w-full bg-current rounded-sm"></div>
-              </div>
+              <List className="h-4 w-4" />
             </Button>
             {isAdmin() && (
               <Button onClick={handleAddDocument}>
@@ -210,22 +209,18 @@ const Home = () => {
         />
       )}
 
-      {/* Document form dialog - Using React memo to prevent unnecessary rerenders */}
+      {/* Document form dialog */}
       <DocumentForm
         document={selectedDocument || undefined}
         open={isFormOpen}
         onClose={() => setIsFormOpen(false)}
       />
 
-      {/* Document view dialog - Ensuring it's properly cleaned up when closed */}
+      {/* Document view dialog - Fixed to properly clean up when closed */}
       <DocumentViewDialog
         document={selectedDocument}
         open={isViewDialogOpen}
-        onClose={() => {
-          setIsViewDialogOpen(false);
-          // Add a small delay before clearing selected document to prevent UI flicker
-          setTimeout(() => setSelectedDocument(null), 300);
-        }}
+        onClose={handleViewDialogClose}
       />
 
       {/* Delete confirmation dialog */}

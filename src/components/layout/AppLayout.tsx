@@ -13,6 +13,7 @@ import {
   Menu,
   X,
   User,
+  Users,
 } from "lucide-react";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
@@ -56,6 +57,12 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
       name: "Categories",
       path: "/categories",
       icon: FolderOpen,
+      allowedRoles: ["admin"],
+    },
+    {
+      name: "Users",
+      path: "/users",
+      icon: Users,
       allowedRoles: ["admin"],
     },
     {
