@@ -1,3 +1,4 @@
+
 import React, { useState, useMemo, useEffect } from "react";
 import AppLayout from "@/components/layout/AppLayout";
 import { useDocuments } from "@/contexts/DocumentContext";
@@ -27,7 +28,7 @@ import {
 } from "@/components/ui/select";
 
 const Home = () => {
-  const { documents, categories, isLoading, updateDocument } = useDocuments();
+  const { documents, categories, isLoading, updateDocument, deleteDocument } = useDocuments();
   const { isAdmin } = useAuth();
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   const [searchQuery, setSearchQuery] = useState("");
@@ -107,8 +108,40 @@ const Home = () => {
   // Fixed: Properly handle dialog close to prevent UI from being stuck
   const handleViewDialogClose = () => {
     setIsViewDialogOpen(false);
-    // Clear the selected document immediately - this was causing the UI to be stuck
-    setSelectedDocument(null);
+    // Clear the selected document after a short delay to allow dialog animation to complete
+    setTimeout(() => {
+      setSelectedDocument(null);
+    }, 300);
+  };
+
+  // Fixed: Properly handle form dialog close
+  const handleFormDialogClose = () => {
+    setIsFormOpen(false);
+    // Clear the selected document after a short delay
+    setTimeout(() => {
+      setSelectedDocument(null);
+    }, 300);
+  };
+
+  // Fixed: Properly handle delete dialog close
+  const handleDeleteDialogClose = () => {
+    setIsDeleteDialogOpen(false);
+    // Clear the selected document after a short delay
+    setTimeout(() => {
+      setSelectedDocument(null);
+    }, 300);
+  };
+
+  // Fixed: Handle confirm delete operation
+  const handleConfirmDelete = () => {
+    if (selectedDocument) {
+      deleteDocument(selectedDocument.id);
+      setIsDeleteDialogOpen(false);
+      // Clear the selected document after a short delay
+      setTimeout(() => {
+        setSelectedDocument(null);
+      }, 300);
+    }
   };
 
   return (
@@ -210,11 +243,11 @@ const Home = () => {
         />
       )}
 
-      {/* Document form dialog */}
+      {/* Document form dialog - improved with proper closing handler */}
       <DocumentForm
         document={selectedDocument || undefined}
         open={isFormOpen}
-        onClose={() => setIsFormOpen(false)}
+        onClose={handleFormDialogClose}
       />
 
       {/* Document view dialog - Fixed to properly clean up when closed */}
@@ -224,18 +257,11 @@ const Home = () => {
         onClose={handleViewDialogClose}
       />
 
-      {/* Delete confirmation dialog */}
+      {/* Delete confirmation dialog - Fixed with proper handlers */}
       <DeleteConfirmDialog
         open={isDeleteDialogOpen}
-        onClose={() => setIsDeleteDialogOpen(false)}
-        onConfirm={() => {
-          if (selectedDocument) {
-            // Call the delete function from context
-            const { deleteDocument } = useDocuments();
-            deleteDocument(selectedDocument.id);
-            setIsDeleteDialogOpen(false);
-          }
-        }}
+        onClose={handleDeleteDialogClose}
+        onConfirm={handleConfirmDelete}
         title="Delete Document"
         description={`Are you sure you want to delete "${selectedDocument?.title}"? This action cannot be undone.`}
       />

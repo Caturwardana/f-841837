@@ -39,7 +39,7 @@ const DocumentList: React.FC<DocumentListProps> = ({
   };
 
   return (
-    <div className="overflow-x-auto rounded-md border bg-background">
+    <div className="overflow-x-auto rounded-md border bg-background shadow">
       <Table>
         <TableHeader className="bg-muted">
           <TableRow>
@@ -53,7 +53,7 @@ const DocumentList: React.FC<DocumentListProps> = ({
         </TableHeader>
         <TableBody>
           {documents.map((doc) => (
-            <TableRow key={doc.id} className="hover:bg-muted/50">
+            <TableRow key={doc.id} className="hover:bg-muted/50 bg-background">
               <TableCell className="font-medium">{doc.title}</TableCell>
               <TableCell>
                 <Badge
