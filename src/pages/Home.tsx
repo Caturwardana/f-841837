@@ -98,7 +98,8 @@ const Home = () => {
     setIsViewDialogOpen(true);
   };
 
-  const handleAddDocument = () => {
+  // Fix: Renamed from handleAddDocument to openAddDocumentForm for clarity
+  const openAddDocumentForm = () => {
     setSelectedDocument(null);
     setIsFormOpen(true);
   };
@@ -135,7 +136,7 @@ const Home = () => {
               <List className="h-4 w-4" />
             </Button>
             {isAdmin() && (
-              <Button onClick={handleAddDocument}>
+              <Button onClick={openAddDocumentForm}>
                 <Plus className="h-4 w-4 mr-2" />
                 Upload Document
               </Button>
