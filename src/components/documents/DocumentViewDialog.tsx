@@ -1,5 +1,5 @@
 
-import React from "react";
+import React, { useEffect } from "react";
 import { Document } from "@/types/document";
 import {
   Dialog,
@@ -25,6 +25,14 @@ const DocumentViewDialog: React.FC<DocumentViewDialogProps> = ({
   open,
   onClose,
 }) => {
+  // Ensure dialog properly unmounts when closed
+  useEffect(() => {
+    return () => {
+      // Cleanup function when component unmounts
+      document = null;
+    };
+  }, []);
+
   if (!document) {
     return null;
   }
@@ -37,8 +45,15 @@ const DocumentViewDialog: React.FC<DocumentViewDialogProps> = ({
     }
   };
 
+  const handleClose = () => {
+    // Ensure we call onClose safely
+    if (onClose) {
+      onClose();
+    }
+  };
+
   return (
-    <Dialog open={open} onOpenChange={onClose}>
+    <Dialog open={open} onOpenChange={handleClose}>
       <DialogContent className="sm:max-w-[600px]">
         <DialogHeader>
           <div className="flex items-center space-x-2">
@@ -81,7 +96,7 @@ const DocumentViewDialog: React.FC<DocumentViewDialogProps> = ({
         </div>
 
         <DialogFooter>
-          <Button variant="outline" onClick={onClose}>
+          <Button variant="outline" onClick={handleClose}>
             Close
           </Button>
           <Button className="gap-2">
