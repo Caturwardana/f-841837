@@ -37,6 +37,20 @@ const DocumentViewDialog: React.FC<DocumentViewDialogProps> = ({
     }
   };
 
+  const handleDownload = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    // In a real app, this would initiate a file download
+    console.log("Downloading document:", document.title);
+    // Don't close the dialog after download
+  };
+
+  const handleClose = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    onClose();
+  };
+
   return (
     <Dialog open={open} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-[600px]">
@@ -45,7 +59,7 @@ const DocumentViewDialog: React.FC<DocumentViewDialogProps> = ({
             <FileText className="h-5 w-5" />
             <DialogTitle>{document.title}</DialogTitle>
           </div>
-          <DialogDescription className="flex items-center space-x-2 pt-1">
+          <div className="flex items-center space-x-2 pt-1">
             <Badge
               style={{ backgroundColor: document.category.color }}
               className="text-white"
@@ -55,7 +69,7 @@ const DocumentViewDialog: React.FC<DocumentViewDialogProps> = ({
             <span className="text-xs">
               {document.fileType} • {document.fileSize}
             </span>
-          </DialogDescription>
+          </div>
         </DialogHeader>
 
         <div className="py-2">
@@ -92,13 +106,14 @@ const DocumentViewDialog: React.FC<DocumentViewDialogProps> = ({
         <DialogFooter className="gap-2 sm:gap-0">
           <Button 
             variant="outline" 
-            onClick={onClose}
+            onClick={handleClose}
             className="w-full sm:w-auto"
           >
             Close
           </Button>
           <Button
             className="gap-2 w-full sm:w-auto"
+            onClick={handleDownload}
           >
             <Download className="h-4 w-4" />
             Download

@@ -44,17 +44,26 @@ export const useDocumentHandlers = () => {
 
   const handleViewDialogClose = useCallback(() => {
     setIsViewDialogOpen(false);
-    setSelectedDocument(null);
+    // Add a small delay before clearing the selected document to avoid UI flickering
+    setTimeout(() => {
+      setSelectedDocument(null);
+    }, 100);
   }, []);
 
   const handleFormDialogClose = useCallback(() => {
     setIsFormOpen(false);
-    setSelectedDocument(null);
+    // Add a small delay before clearing the selected document to avoid UI flickering
+    setTimeout(() => {
+      setSelectedDocument(null);
+    }, 100);
   }, []);
 
   const handleDeleteDialogClose = useCallback(() => {
     setIsDeleteDialogOpen(false);
-    setSelectedDocument(null);
+    // Add a small delay before clearing the selected document to avoid UI flickering
+    setTimeout(() => {
+      setSelectedDocument(null);
+    }, 100);
   }, []);
 
   const handleConfirmDelete = useCallback(() => {
