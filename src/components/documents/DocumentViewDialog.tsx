@@ -1,5 +1,5 @@
 
-import React, { useEffect } from "react";
+import React from "react";
 import { Document } from "@/types/document";
 import {
   Dialog,
@@ -25,14 +25,6 @@ const DocumentViewDialog: React.FC<DocumentViewDialogProps> = ({
   open,
   onClose,
 }) => {
-  // Clear selected document when dialog closes
-  useEffect(() => {
-    if (!open) {
-      // This effect will run when the dialog closes
-      // No need to do anything here as the parent component will handle cleanup
-    }
-  }, [open]);
-
   if (!document) {
     return null;
   }
@@ -45,13 +37,8 @@ const DocumentViewDialog: React.FC<DocumentViewDialogProps> = ({
     }
   };
 
-  const handleClose = () => {
-    // Call the provided onClose callback
-    onClose();
-  };
-
   return (
-    <Dialog open={open} onOpenChange={handleClose}>
+    <Dialog open={open} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-[600px]">
         <DialogHeader>
           <div className="flex items-center space-x-2">
@@ -94,7 +81,7 @@ const DocumentViewDialog: React.FC<DocumentViewDialogProps> = ({
         </div>
 
         <DialogFooter>
-          <Button variant="outline" onClick={handleClose}>
+          <Button variant="outline" onClick={onClose}>
             Close
           </Button>
           <Button className="gap-2">

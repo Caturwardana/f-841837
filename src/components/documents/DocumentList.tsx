@@ -39,22 +39,22 @@ const DocumentList: React.FC<DocumentListProps> = ({
   };
 
   return (
-    <div className="overflow-x-auto rounded-md border bg-background shadow-sm">
+    <div className="overflow-x-auto rounded-md border bg-background">
       <Table>
-        <TableHeader>
-          <TableRow className="bg-slate-100 dark:bg-slate-800">
-            <TableHead className="w-[30%] font-medium">Title</TableHead>
-            <TableHead className="font-medium">Category</TableHead>
-            <TableHead className="font-medium">Type</TableHead>
-            <TableHead className="font-medium">Size</TableHead>
-            <TableHead className="font-medium">Upload Date</TableHead>
-            <TableHead className="text-right font-medium">Actions</TableHead>
+        <TableHeader className="bg-muted">
+          <TableRow>
+            <TableHead className="w-[30%]">Title</TableHead>
+            <TableHead>Category</TableHead>
+            <TableHead>Type</TableHead>
+            <TableHead>Size</TableHead>
+            <TableHead>Upload Date</TableHead>
+            <TableHead className="text-right">Actions</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
           {documents.map((doc) => (
-            <TableRow key={doc.id} className="border-b hover:bg-slate-50 dark:hover:bg-slate-800/50">
-              <TableCell className="font-medium text-primary-500">{doc.title}</TableCell>
+            <TableRow key={doc.id} className="hover:bg-muted/50">
+              <TableCell className="font-medium">{doc.title}</TableCell>
               <TableCell>
                 <Badge
                   style={{ backgroundColor: doc.category.color }}
@@ -63,9 +63,9 @@ const DocumentList: React.FC<DocumentListProps> = ({
                   {doc.category.name}
                 </Badge>
               </TableCell>
-              <TableCell className="text-slate-900 dark:text-slate-100">{doc.fileType}</TableCell>
-              <TableCell className="text-slate-900 dark:text-slate-100">{doc.fileSize}</TableCell>
-              <TableCell className="text-slate-900 dark:text-slate-100">{formatDate(doc.uploadDate)}</TableCell>
+              <TableCell>{doc.fileType}</TableCell>
+              <TableCell>{doc.fileSize}</TableCell>
+              <TableCell>{formatDate(doc.uploadDate)}</TableCell>
               <TableCell className="text-right">
                 <div className="flex justify-end gap-2">
                   <Button variant="outline" size="icon" onClick={() => onView(doc)}>
