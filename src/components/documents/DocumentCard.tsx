@@ -37,6 +37,24 @@ const DocumentCard: React.FC<DocumentCardProps> = ({ document, onEdit, onDelete,
     }
   };
 
+  const handleView = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    onView(document);
+  };
+
+  const handleEdit = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    onEdit(document);
+  };
+
+  const handleDelete = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    onDelete(document);
+  };
+
   return (
     <Card className="overflow-hidden hover:shadow-md transition-shadow">
       <CardContent className="p-4">
@@ -55,19 +73,19 @@ const DocumentCard: React.FC<DocumentCardProps> = ({ document, onEdit, onDelete,
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-              <DropdownMenuItem onClick={() => onView(document)}>
+              <DropdownMenuItem onClick={handleView}>
                 <Eye className="h-4 w-4 mr-2" />
                 View
               </DropdownMenuItem>
               {isAdmin() && (
                 <>
-                  <DropdownMenuItem onClick={() => onEdit(document)}>
+                  <DropdownMenuItem onClick={handleEdit}>
                     <Edit className="h-4 w-4 mr-2" />
                     Edit
                   </DropdownMenuItem>
                   <DropdownMenuItem 
-                    onClick={() => onDelete(document)} 
-                    className="text-error"
+                    onClick={handleDelete} 
+                    className="text-destructive"
                   >
                     <Trash2 className="h-4 w-4 mr-2" />
                     Delete
@@ -80,7 +98,7 @@ const DocumentCard: React.FC<DocumentCardProps> = ({ document, onEdit, onDelete,
         
         <div 
           className="flex items-center mb-4 cursor-pointer" 
-          onClick={() => onView(document)}
+          onClick={handleView}
         >
           <div className="mr-3">
             {getFileIcon()}

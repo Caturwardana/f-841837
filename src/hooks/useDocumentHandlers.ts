@@ -1,7 +1,8 @@
 
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { Document } from "@/types/document";
 import { useDocuments } from "@/contexts/DocumentContext";
+import { toast } from "sonner";
 
 export const useDocumentHandlers = () => {
   const { updateDocument, deleteDocument } = useDocuments();
@@ -10,17 +11,17 @@ export const useDocumentHandlers = () => {
   const [isViewDialogOpen, setIsViewDialogOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
 
-  const handleEditDocument = (document: Document) => {
+  const handleEditDocument = useCallback((document: Document) => {
     setSelectedDocument(document);
     setIsFormOpen(true);
-  };
+  }, []);
 
-  const handleDeleteDocument = (document: Document) => {
+  const handleDeleteDocument = useCallback((document: Document) => {
     setSelectedDocument(document);
     setIsDeleteDialogOpen(true);
-  };
+  }, []);
 
-  const handleViewDocument = (document: Document) => {
+  const handleViewDocument = useCallback((document: Document) => {
     // Update view count and last viewed time before opening dialog
     const updatedDocument = {
       ...document,
@@ -34,47 +35,36 @@ export const useDocumentHandlers = () => {
     // Set as selected document and open dialog
     setSelectedDocument(updatedDocument);
     setIsViewDialogOpen(true);
-  };
+  }, [updateDocument]);
 
-  const openAddDocumentForm = () => {
+  const openAddDocumentForm = useCallback(() => {
     setSelectedDocument(null);
     setIsFormOpen(true);
-  };
+  }, []);
 
-  const handleViewDialogClose = () => {
+  const handleViewDialogClose = useCallback(() => {
     setIsViewDialogOpen(false);
-    // Clear the selected document after a short delay to allow dialog animation to complete
-    setTimeout(() => {
-      setSelectedDocument(null);
-    }, 300);
-  };
+    setSelectedDocument(null);
+  }, []);
 
-  const handleFormDialogClose = () => {
+  const handleFormDialogClose = useCallback(() => {
     setIsFormOpen(false);
-    // Clear the selected document after a short delay
-    setTimeout(() => {
-      setSelectedDocument(null);
-    }, 300);
-  };
+    setSelectedDocument(null);
+  }, []);
 
-  const handleDeleteDialogClose = () => {
+  const handleDeleteDialogClose = useCallback(() => {
     setIsDeleteDialogOpen(false);
-    // Clear the selected document after a short delay
-    setTimeout(() => {
-      setSelectedDocument(null);
-    }, 300);
-  };
+    setSelectedDocument(null);
+  }, []);
 
-  const handleConfirmDelete = () => {
+  const handleConfirmDelete = useCallback(() => {
     if (selectedDocument) {
       deleteDocument(selectedDocument.id);
       setIsDeleteDialogOpen(false);
-      // Clear the selected document after a short delay
-      setTimeout(() => {
-        setSelectedDocument(null);
-      }, 300);
+      toast.success("Document deleted successfully");
+      setSelectedDocument(null);
     }
-  };
+  }, [selectedDocument, deleteDocument]);
 
   return {
     selectedDocument,

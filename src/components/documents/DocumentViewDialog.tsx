@@ -1,5 +1,5 @@
 
-import React, { useEffect } from "react";
+import React from "react";
 import { Document } from "@/types/document";
 import {
   Dialog,
@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { FileText, Download } from "lucide-react";
+import { FileText, Download, Eye } from "lucide-react";
 import { format } from "date-fns";
 
 interface DocumentViewDialogProps {
@@ -25,14 +25,6 @@ const DocumentViewDialog: React.FC<DocumentViewDialogProps> = ({
   open,
   onClose,
 }) => {
-  // Ensure dialog properly unmounts when closed
-  useEffect(() => {
-    return () => {
-      // Cleanup function when component unmounts
-      document = null;
-    };
-  }, []);
-
   if (!document) {
     return null;
   }
@@ -45,15 +37,8 @@ const DocumentViewDialog: React.FC<DocumentViewDialogProps> = ({
     }
   };
 
-  const handleClose = () => {
-    // Ensure we call onClose safely
-    if (onClose) {
-      onClose();
-    }
-  };
-
   return (
-    <Dialog open={open} onOpenChange={handleClose}>
+    <Dialog open={open} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-[600px]">
         <DialogHeader>
           <div className="flex items-center space-x-2">
@@ -89,17 +74,32 @@ const DocumentViewDialog: React.FC<DocumentViewDialogProps> = ({
               {formatDate(document.uploadDate)}
             </p>
           </div>
+          {document.viewCount !== undefined && (
+            <div>
+              <h4 className="text-sm font-medium mb-1">Views</h4>
+              <p className="text-sm text-muted-foreground flex items-center">
+                <Eye className="h-3.5 w-3.5 mr-1.5" />
+                {document.viewCount} view{document.viewCount !== 1 ? 's' : ''}
+              </p>
+            </div>
+          )}
         </div>
 
         <div className="mt-4 p-6 rounded-md bg-muted flex items-center justify-center">
           <p className="text-muted-foreground">Document preview would appear here</p>
         </div>
 
-        <DialogFooter>
-          <Button variant="outline" onClick={handleClose}>
+        <DialogFooter className="gap-2 sm:gap-0">
+          <Button 
+            variant="outline" 
+            onClick={onClose}
+            className="w-full sm:w-auto"
+          >
             Close
           </Button>
-          <Button className="gap-2">
+          <Button
+            className="gap-2 w-full sm:w-auto"
+          >
             <Download className="h-4 w-4" />
             Download
           </Button>

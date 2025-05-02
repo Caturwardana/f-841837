@@ -91,25 +91,32 @@ const Home = () => {
         onView={handleViewDocument}
       />
 
-      <DocumentForm
-        document={selectedDocument || undefined}
-        open={isFormOpen}
-        onClose={handleFormDialogClose}
-      />
+      {/* Only render dialogs when needed */}
+      {isFormOpen && (
+        <DocumentForm
+          document={selectedDocument || undefined}
+          open={isFormOpen}
+          onClose={handleFormDialogClose}
+        />
+      )}
 
-      <DocumentViewDialog
-        document={selectedDocument}
-        open={isViewDialogOpen}
-        onClose={handleViewDialogClose}
-      />
+      {isViewDialogOpen && selectedDocument && (
+        <DocumentViewDialog
+          document={selectedDocument}
+          open={isViewDialogOpen}
+          onClose={handleViewDialogClose}
+        />
+      )}
 
-      <DeleteConfirmDialog
-        open={isDeleteDialogOpen}
-        onClose={handleDeleteDialogClose}
-        onConfirm={handleConfirmDelete}
-        title="Delete Document"
-        description={`Are you sure you want to delete "${selectedDocument?.title}"? This action cannot be undone.`}
-      />
+      {isDeleteDialogOpen && (
+        <DeleteConfirmDialog
+          open={isDeleteDialogOpen}
+          onClose={handleDeleteDialogClose}
+          onConfirm={handleConfirmDelete}
+          title="Delete Document"
+          description={`Are you sure you want to delete "${selectedDocument?.title}"? This action cannot be undone.`}
+        />
+      )}
     </AppLayout>
   );
 };
